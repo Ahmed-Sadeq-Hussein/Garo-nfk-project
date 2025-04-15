@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # Local resources
+
+#The resources
+/resource json/

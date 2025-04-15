@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from typing import List
 import os
 
+## python -m pip install pandas
+
 ### Settings
 SHEET_NAME = "Entity"
 EXCEL_FILE = "Entity ifrån Egenskap till Nytta inkl värde i kronor.xlsx"
