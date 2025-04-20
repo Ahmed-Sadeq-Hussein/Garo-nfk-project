@@ -1,22 +1,12 @@
-// generatePages.js
-
 const fs = require('fs');
 const path = require('path');
 
-// ✅ Sanitize version WITH numbers (default)
-function sanitizeFilename(name) {
+// ✅ Sanitize name and REMOVE leading numbers
+function sanitizeComponentName(name) {
   return name
     .replace(/-/g, '_')                 // replace hyphens with underscores
-    .replace(/[^a-z0-9_ ]/gi, '')       // allow letters, numbers, underscores, spaces
-    .replace(/\s+/g, '')                // remove spaces
-    .trim();
-}
-
-// ✅ Sanitize version WITHOUT numbers (for alternate file/component)
-function sanitizeFilenameWithoutNumbers(name) {
-  return name
-    .replace(/-/g, '_')                 // replace hyphens with underscores
-    .replace(/[^a-zA-Z_ ]/g, '')        // only letters and underscores
+    .replace(/^[0-9]+/, '')             // remove leading numbers
+    .replace(/[^a-zA-Z0-9_ ]/g, '')     // keep only safe characters
     .replace(/\s+/g, '')                // remove spaces
     .trim();
 }
@@ -24,29 +14,31 @@ function sanitizeFilenameWithoutNumbers(name) {
 const jsonDir = path.join(__dirname, 'resource json');
 const outputDir = path.join(__dirname, 'Front_end/info-page/src/generated');
 
-// Ensure the output folder exists and is clean
+// Clean and recreate the output folder
 if (fs.existsSync(outputDir)) {
   fs.rmSync(outputDir, { recursive: true });
 }
 fs.mkdirSync(outputDir, { recursive: true });
 
-// Generate React page components
+// 🔧 Generate a React component for each JSON feature
 fs.readdirSync(jsonDir).forEach(file => {
-  if (file.endsWith('.json')) {
+  if (file.endsWith('.json') && file !== 'routes.json') {
     const raw = fs.readFileSync(path.join(jsonDir, file));
     const data = JSON.parse(raw);
 
-    const originalName = data.egenskap;
-    const safeName = sanitizeFilename(originalName);
-    const safeNameNoNums = sanitizeFilenameWithoutNumbers(originalName);
-
+    const rawName = data.egenskap;
+    const safeName = sanitizeComponentName(rawName);
     const componentName = `${safeName}Page`;
-    const altComponentName = `${safeNameNoNums}Page`;
+    const fileName = `${componentName}.js`;
 
-    const content = (nameToUse) => `
+    const pageContent = `
 import React from 'react';
 
-export default function ${nameToUse}() {
+export const section = "${data.section || ''}";
+export const reference = "${data.reference || ''}";
+export const part = "${data.part || ''}";
+
+export default function ${componentName}() {
   return (
     <div>
       <h1>${data.egenskap}</h1>
@@ -59,20 +51,30 @@ export default function ${nameToUse}() {
     </div>
   );
 }
-`.trim();
+`;
 
-    // Save component WITH numbers
-    fs.writeFileSync(
-      path.join(outputDir, `${componentName}.js`),
-      content(componentName)
-    );
-
-    // Save component WITHOUT numbers
-    fs.writeFileSync(
-      path.join(outputDir, `${altComponentName}.js`),
-      content(altComponentName)
-    );
+    fs.writeFileSync(path.join(outputDir, fileName), pageContent.trim());
   }
 });
 
-console.log("✅ Pages generated with and without numbers.");
+// 🧭 Generate Routes.js from routes.json
+const routesPath = path.join(jsonDir, 'routes.json');
+if (fs.existsSync(routesPath)) {
+  const routesRaw = fs.readFileSync(routesPath);
+  const routesList = JSON.parse(routesRaw);
+
+  const routesContent = `
+const routes = ${JSON.stringify(routesList, null, 2)};
+
+export default routes;
+`;
+
+  fs.writeFileSync(
+    path.join(outputDir, 'Routes.js'),
+    routesContent.trim()
+  );
+
+  console.log("📦 Routes.js generated from routes.json");
+}
+
+console.log("✅ Feature pages generated in 'generated' folder.");

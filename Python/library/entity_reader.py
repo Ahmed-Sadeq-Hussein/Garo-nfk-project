@@ -3,9 +3,7 @@ from dataclasses import dataclass
 from typing import List
 import os
 
-## python -m pip install pandas
-
-### Settings
+# === Settings ===
 SHEET_NAME = "Entity"
 EXCEL_FILE = "Entity ifrån Egenskap till Nytta inkl värde i kronor.xlsx"
 PATH = f"F:/Active/NFK GARO/Resources/{EXCEL_FILE}"
@@ -19,6 +17,9 @@ class Feature:
     anledning: str
     cost: str
     beskrivning: str
+    section: str
+    reference: str
+    part: str
 
 def read_feature_from_row(row) -> Feature:
     return Feature(
@@ -28,7 +29,10 @@ def read_feature_from_row(row) -> Feature:
         problem=row.get('Tänkbara Problem', ''),
         anledning=row.get('Anledning till att ha', ''),
         cost=row.get('Värde', ''),
-        beskrivning=row.get('Beskrivning', '')
+        beskrivning=row.get('Beskrivning', ''),
+        section=row.get('Section', ''),
+        reference=row.get('Reference', ''),
+        part=row.get('Part', '')
     )
 
 def load_features(path: str, sheet_name: str) -> List[Feature]:
@@ -44,5 +48,4 @@ def load_features(path: str, sheet_name: str) -> List[Feature]:
 if __name__ == "__main__":
     features = load_features(PATH, SHEET_NAME)
     for f in features:
-        print(f , "\n \n")
-
+        print(f, "\n")

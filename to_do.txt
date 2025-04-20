@@ -1,0 +1,7 @@
+
+
+
+1. Organize the excel into sections 
+2. give each coloumn a section_nmr for association
+3. Complete the main.js file to present 
+4. rewrite and simplify excel furthure.
