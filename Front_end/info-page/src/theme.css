@@ -93,7 +93,33 @@ sub,sup {
     position: relative;
     vertical-align: baseline
 }
-
+body {
+    background: #f9f9f9;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    color: #222;
+  }
+  
+  .section-banner {
+    background-color: #004488;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feature-slide {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    max-width: 800px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+  
 sub {
     bottom: -.25em
 }

@@ -1,0 +1,116 @@
+[
+  {
+    "file": "Garo.json",
+    "title": "Garo ",
+    "section": 1,
+    "part": 1
+  },
+  {
+    "file": "Överkoplingsbar.json",
+    "title": "Överkoplingsbar",
+    "section": 2,
+    "part": 1
+  },
+  {
+    "file": "Snabbplintar.json",
+    "title": "Snabbplintar",
+    "section": 2,
+    "part": 2
+  },
+  {
+    "file": "Lastbalansering.json",
+    "title": "Lastbalansering",
+    "section": 2,
+    "part": 3
+  },
+  {
+    "file": "Fas-optimering.json",
+    "title": "Fas-optimering ",
+    "section": 2,
+    "part": 4
+  },
+  {
+    "file": "Alla skydd finns inbyggda.json",
+    "title": "Alla skydd finns inbyggda",
+    "section": 2,
+    "part": 5
+  },
+  {
+    "file": "4GWifiEthernetMeshed wifi.json",
+    "title": "4G/Wifi/Ethernet/Meshed wifi",
+    "section": 3,
+    "part": 1
+  },
+  {
+    "file": "Garo Connect.json",
+    "title": "Garo Connect",
+    "section": 3,
+    "part": 2
+  },
+  {
+    "file": "Direkt OCPP.json",
+    "title": "Direkt OCPP",
+    "section": 3,
+    "part": 3
+  },
+  {
+    "file": "PAC.json",
+    "title": "PAC",
+    "section": 3,
+    "part": 4
+  },
+  {
+    "file": "ISO15118 redo.json",
+    "title": "ISO15118 redo",
+    "section": 3,
+    "part": 5
+  },
+  {
+    "file": "Microprocessor.json",
+    "title": "Microprocessor",
+    "section": 4,
+    "part": 1
+  },
+  {
+    "file": "Over-  undervoltage protection.json",
+    "title": "Over- / undervoltage protection",
+    "section": 4,
+    "part": 2
+  },
+  {
+    "file": "Tredje part cert.json",
+    "title": "Tredje part cert.",
+    "section": 5,
+    "part": 1
+  },
+  {
+    "file": "IEC 62955.json",
+    "title": "IEC 62955",
+    "section": 5,
+    "part": 2
+  },
+  {
+    "file": "LCA  EPD.json",
+    "title": "LCA & EPD",
+    "section": 5,
+    "part": 3
+  },
+  {
+    "file": "Eichrect - kommande.json",
+    "title": "Eichrect - kommande ",
+    "section": 5,
+    "part": 4
+  },
+  {
+    "file": "Tillverkning i Sverige  Polen.json",
+    "title": "Tillverkning i Sverige & Polen",
+    "section": 6,
+    "part": 1
+  },
+  {
+    "file": "Produktion Marknad KS RnD Support Service.json",
+    "title": "Produktion, Marknad, KS, RnD, Support, Service",
+    "section": 6,
+    "part": 2
+  }
+]
