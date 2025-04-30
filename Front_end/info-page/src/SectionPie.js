@@ -1,3 +1,4 @@
+// src/SectionPie.js
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useNavigate } from 'react-router-dom';
@@ -13,20 +14,18 @@ const sectionLabels = {
   "6": "🏭 6. Tillverkning & Organisation"
 };
 
-// This would usually be dynamic from your routes.js
 const data = Object.entries(sectionLabels).map(([key, label]) => ({
   name: label,
   section: key,
-  value: 1  // equally sized slices — or count real features
+  value: 1 // or count of features per section
 }));
 
 export default function SectionPie() {
   const navigate = useNavigate();
 
   const handleClick = (entry) => {
-    const section = entry.payload.section;
-    // You could route to a page or anchor like:
-    navigate(`/section/${section}`);
+    const sectionId = entry.payload.section;
+    navigate(`/section/${sectionId}`);
   };
 
   return (
@@ -41,7 +40,7 @@ export default function SectionPie() {
           cy="50%"
           outerRadius={120}
           innerRadius={60}
-          paddingAngle={3}
+          paddingAngle={5}
           label
           onClick={handleClick}
         >

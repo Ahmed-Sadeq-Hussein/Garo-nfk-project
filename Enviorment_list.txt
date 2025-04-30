@@ -11,3 +11,5 @@ reactjs
 }
 
 npm install @splidejs/react-splide
+npm install react-router-dom
+npm install recharts

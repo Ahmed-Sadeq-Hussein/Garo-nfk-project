@@ -27,9 +27,7 @@ if (fs.existsSync(outputDir)) {
 }
 fs.mkdirSync(outputDir, { recursive: true });
 
-/**
- * 🔄 Loop through each feature JSON file and generate a corresponding React component.
- */
+// 🔄 Generate a component for each JSON file
 fs.readdirSync(jsonDir).forEach(file => {
   if (file.endsWith('.json') && file !== 'routes.json') {
     const raw = fs.readFileSync(path.join(jsonDir, file));
@@ -39,13 +37,8 @@ fs.readdirSync(jsonDir).forEach(file => {
     const componentName = `${safeName}Page`;
     const fileName = `${componentName}.js`;
 
-    // 🧠 Use a dynamic field renderer to skip "Inget innehåll"
     const pageContent = `
 import React from 'react';
-
-export const section = "${data.section || ''}";
-export const reference = "${data.reference || ''}";
-export const part = "${data.part || ''}";
 
 export default function ${componentName}() {
   const fields = [
@@ -54,7 +47,8 @@ export default function ${componentName}() {
     { label: "Tänkbara Problem", value: \`${data.problem}\` },
     { label: "Anledning", value: \`${data.anledning}\` },
     { label: "Värde", value: \`${data.cost}\` },
-    { label: "Beskrivning", value: \`${data.beskrivning}\` }
+    { label: "Beskrivning", value: \`${data.beskrivning}\` },
+    { label: "Taggar", value: \`${(data.tags || []).join(', ')}\` }
   ];
 
   return (
@@ -64,8 +58,7 @@ export default function ${componentName}() {
         .filter(field => field.value && field.value !== "Inget innehåll")
         .map((field, i) => (
           <p key={i}><strong>{field.label}:</strong> {field.value}</p>
-        ))
-      }
+        ))}
     </div>
   );
 }
@@ -75,17 +68,13 @@ export default function ${componentName}() {
   }
 });
 
-/**
- * 📦 Generate Routes.js from routes.json
- * This allows App.js to access all metadata and component file names
- */
+// 📦 Generate Routes.js from routes.json
 const routesPath = path.join(jsonDir, 'routes.json');
 
 if (fs.existsSync(routesPath)) {
   const routesRaw = fs.readFileSync(routesPath);
   const routesList = JSON.parse(routesRaw);
 
-  // Add generated component filename to each route entry
   const enrichedRoutes = routesList.map((r) => {
     const safeName = sanitizeComponentName(r.title);
     return {
