@@ -8,7 +8,7 @@ SHEET_NAME = "Entity"
 EXCEL_FILE = "Entity ifrån Egenskap till Nytta inkl värde i kronor.xlsx"
 PATH = f"F:/Active/NFK GARO/Resources/{EXCEL_FILE}"
 
-# These correspond to the binary tag columns in the Excel file
+# === Tag columns matching Excel header names ===
 TAG_COLUMNS = [
     "Garo",
     "Säkerhet",
@@ -29,37 +29,50 @@ class Feature:
     cost: str
     beskrivning: str
     reference: str
-    tags: List[str]
+    Garo: int
+    Säkerhet: int
+    Driftsäkerhet: int
+    Installation: int
+    användarvänligt: int
+    Smartafunktioner: int
+    Ekonomi: int
+    
+def safe_int(value):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return 0
 
 def read_feature_from_row(row) -> Feature:
-    def safe_get(col):
-        value = row.get(col, "")
-        return "" if pd.isna(value) else str(value).strip()
-
-    tags = [col for col in TAG_COLUMNS if row.get(col, 0) == 1]
-
     return Feature(
-        egenskap=safe_get('Egenskap'),
-        fordel=safe_get('Kundfördel'),
-        nytta=safe_get('Tänkbar Nytta'),
-        problem=safe_get('Tänkbara Problem'),
-        anledning=safe_get('Anledning till att ha'),
-        cost=safe_get('Värde'),
-        beskrivning=safe_get('Beskrivning'),
-        reference=safe_get('Reference'),
-        tags=tags
+        egenskap=str(row.get('Egenskap', '') or ''),
+        fordel=str(row.get('Kundfördel', '') or ''),
+        nytta=str(row.get('Tänkbar Nytta', '') or ''),
+        problem=str(row.get('Tänkbara Problem', '') or ''),
+        anledning=str(row.get('Anledning till att ha', '') or ''),
+        cost=str(row.get('Värde', '') or ''),
+        beskrivning=str(row.get('Beskrivning', '') or ''),
+        reference=str(row.get('Reference', '') or ''),
+        Garo=safe_int(row.get('Garo')),
+        Säkerhet=safe_int(row.get('Säkerhet')),
+        Driftsäkerhet=safe_int(row.get('Driftsäkerhet')),
+        Installation=safe_int(row.get('Installation')),
+        användarvänligt=safe_int(row.get('användarvänligt')),
+        Smartafunktioner=safe_int(row.get('Smarta funktioner')),
+        Ekonomi=safe_int(row.get('Ekonomi'))
     )
+
 
 def load_features(path: str, sheet_name: str) -> List[Feature]:
     if not os.path.exists(path):
-        raise FileNotFoundError("❌ Excel file not found at: " + path)
+        raise FileNotFoundError(f"Excel file not found at: {path}")
 
     df = pd.read_excel(path, sheet_name=sheet_name)
     df = df.dropna(subset=["Egenskap"])
-    return [read_feature_from_row(row) for _, row in df.iterrows()]
+    features = [read_feature_from_row(row) for _, row in df.iterrows()]
+    return features
 
-# Preview
 if __name__ == "__main__":
     features = load_features(PATH, SHEET_NAME)
     for f in features:
-        print(f"{f.egenskap} => Tags: {f.tags}")
+        print(f)
