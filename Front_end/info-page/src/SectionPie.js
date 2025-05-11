@@ -31,6 +31,8 @@ const SectionPie = () => {
     <div className="section-container">
       <img src="/garo-logo-red.png" alt="Garo Logo" className="garo-logo" />
 
+      
+      <h2 classname="title">Detta är en informations hemsida för er som vill gärna läsa mer om</h2>
       <h2 className="title">Välj en Sektion</h2>
       <div className="chart-wrapper">
         <PieChart width={400} height={400}>

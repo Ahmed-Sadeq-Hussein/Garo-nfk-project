@@ -1,0 +1,1 @@
+#Detta är en settings folder som kan användas av användare för att lägga in både

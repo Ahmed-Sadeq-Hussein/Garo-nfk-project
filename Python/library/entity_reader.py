@@ -2,11 +2,14 @@ import pandas as pd
 from dataclasses import dataclass
 from typing import List
 import os
+from SelectFile import get_settings
+
 
 # === Settings ===
-SHEET_NAME = "Entity"
-EXCEL_FILE = "Entity ifrån Egenskap till Nytta inkl värde i kronor.xlsx"
-PATH = f"F:/Active/NFK GARO/Resources/{EXCEL_FILE}"
+#SHEET_NAME = "Entity"
+#EXCEL_FILE = "Entity ifrån Egenskap till Nytta inkl värde i kronor.xlsx"
+#PATH = f"F:/Active/NFK GARO/Resources/{EXCEL_FILE}"
+PATH, SHEET_NAME = get_settings()
 
 # === Tag columns matching Excel header names ===
 TAG_COLUMNS = [
