@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  background-color: #000;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
   font-family: 'Segoe UI', sans-serif;
   display: flex;
   justify-content: center;
@@ -37,4 +37,14 @@ body {
 .title {
   font-size: 1.8rem;
   margin-top: 1rem;
+}
+
+.alt-section {
+  padding: 2rem 1rem;
+}
+.alt-section:nth-child(even) {
+  background-color: #f3f3f3;
+}
+.alt-section:nth-child(odd) {
+  background-color: #ffffff;
 }

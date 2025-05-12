@@ -2,7 +2,7 @@ import os
 import readchar
 from entity_reader import load_features, Feature, PATH, SHEET_NAME  # Reuse constants
 
-# Display list of all feature names
+# Display list of all feature names. This is used for debugging purposes only
 def list_egenskaper(features):
     print("\n=== Lista av Egenskaper ===")
     for i, f in enumerate(features):
@@ -43,13 +43,13 @@ def main():
         if selection.lower() == 'exit':
             break
 
-        # 1️⃣ Case: User typed a number
+        #Case: User typed a number
         if selection.isdigit():
             index = int(selection) - 1
             if 0 <= index < len(features):
                 feature_viewer(features[index])
             else:
-                print("❌ Ogiltigt nummer. Tryck enter för att försöka igen.")
+                print(" Ogiltigt nummer. Tryck enter för att försöka igen.")
                 input()
             continue
 

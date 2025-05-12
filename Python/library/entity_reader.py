@@ -4,7 +4,7 @@ from typing import List
 import os
 from SelectFile import get_settings
 
-
+##purpose. To read all the entities and put them in their proper place.  
 # === Settings ===
 #SHEET_NAME = "Entity"
 #EXCEL_FILE = "Entity ifrån Egenskap till Nytta inkl värde i kronor.xlsx"

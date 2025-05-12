@@ -4,12 +4,22 @@ import shutil
 import math
 from collections import defaultdict
 from entity_reader import load_features, PATH, SHEET_NAME, TAG_COLUMNS
-import os
+## config
 EXPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "resource json"))
-
 ROUTES_FILE = os.path.join(EXPORT_DIR, "routes.json")
 TAG_COUNTS_FILE = os.path.join(EXPORT_DIR, "tagCounts.json")
 
+# Mapping tag display name to feature attribute name
+TAG_COLUMN_MAPPING = {
+    "Garo": "Garo",
+    "Säkerhet": "Säkerhet",
+    "Driftsäkerhet": "Driftsäkerhet",
+    "Installation": "Installation",
+    "användarvänligt": "användarvänligt",
+    "Smarta funktioner": "Smartafunktioner",
+    "Ekonomi": "Ekonomi"
+}
+##Deleting contents not required.
 def clean_dict(d):
     return {
         k: ("Inget innehåll" if isinstance(v, float) and math.isnan(v) else v)
@@ -37,7 +47,8 @@ def export_features_to_json():
 
         tags = []
         for tag in TAG_COLUMNS:
-            if getattr(feature, tag, 0) == 1:
+            attr_name = TAG_COLUMN_MAPPING[tag]
+            if getattr(feature, attr_name, 0) == 1:
                 tags.append(tag)
                 tag_counts[tag] += 1
 

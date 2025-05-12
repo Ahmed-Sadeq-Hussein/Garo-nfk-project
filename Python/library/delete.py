@@ -1,11 +1,13 @@
 import shutil
 import os
 
-# Define relative paths from this script's location
+##Define relative paths from this script's location
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 GENERATED_DIR = os.path.join(BASE_DIR, 'Front_end', 'info-page', 'src', 'generated')
 RESOURCE_JSON_DIR = os.path.join(BASE_DIR, 'resource json')
 
+
+## used to delete all contents generated previously
 def remove_folder(path, name):
     if os.path.exists(path):
         shutil.rmtree(path)
