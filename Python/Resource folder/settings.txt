@@ -1,4 +1,0 @@
-# Settings for Excel processing
-excel_file=F:/Active/NFK GARO/Resources/Entity ifrån Egenskap till Nytta inkl värde i kronor.xlsx
-sheet_name=Entity
-remember=false

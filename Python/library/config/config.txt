@@ -1,2 +1,0 @@
-Entity
-Entity ifrån Egenskap till Nytta inkl värde i kronor.xlsx
