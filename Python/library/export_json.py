@@ -15,7 +15,7 @@ TAG_COLUMN_MAPPING = {
     "Säkerhet": "Säkerhet",
     "Driftsäkerhet": "Driftsäkerhet",
     "Installation": "Installation",
-    "användarvänligt": "användarvänligt",
+    "Användarvänlighet": "Användarvänlighet",
     "Smarta funktioner": "Smartafunktioner",
     "Ekonomi": "Ekonomi"
 }

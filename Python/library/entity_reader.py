@@ -17,7 +17,7 @@ TAG_COLUMNS = [
     "Säkerhet",
     "Driftsäkerhet",
     "Installation",
-    "användarvänligt",
+    "Användarvänlighet",
     "Smarta funktioner",
     "Ekonomi"
 ]
@@ -36,7 +36,7 @@ class Feature:
     Säkerhet: int
     Driftsäkerhet: int
     Installation: int
-    användarvänligt: int
+    Användarvänlighet: int
     Smartafunktioner: int
     Ekonomi: int
     
@@ -60,7 +60,7 @@ def read_feature_from_row(row) -> Feature:
         Säkerhet=safe_int(row.get('Säkerhet')),
         Driftsäkerhet=safe_int(row.get('Driftsäkerhet')),
         Installation=safe_int(row.get('Installation')),
-        användarvänligt=safe_int(row.get('användarvänligt')),
+        Användarvänlighet=safe_int(row.get('Användarvänlighet')),
         Smartafunktioner=safe_int(row.get('Smarta funktioner')),
         Ekonomi=safe_int(row.get('Ekonomi'))
     )

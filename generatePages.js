@@ -1,51 +1,51 @@
 const fs = require('fs');
 const path = require('path');
 
-//  Config
+// === Config ===
 const TAG_COLUMNS = [
   "Garo",
   "Säkerhet",
   "Driftsäkerhet",
   "Installation",
-  "användarvänligt",
+  "Användarvänlighet",
   "Smarta funktioner",
   "Ekonomi"
 ];
 
-const jsonDir = path.join(__dirname, 'resource json');
-const outputDir = path.join(__dirname, 'Front_end/info-page/src/generated');
+const isPackaged = process.pkg != null;
+const exeDir = isPackaged ? path.dirname(process.execPath) : __dirname;
+const garoRoot = path.resolve(exeDir, '..');
+const jsonDir = path.join(garoRoot, 'resource json');
+const outputDir = path.join(garoRoot, 'Front_end', 'info-page', 'src', 'generated');
+const brodtextPath = path.join(exeDir, 'brödtext.txt');
+const brodtextOutput = path.join(outputDir, 'brodtext.js');
 
 function sanitizeComponentName(name) {
   return name
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
-    .replace(/[^a-zA-Z0-9]/g, '')                    // remove special characters
-    .replace(/^[0-9]+/, '')                          // remove leading numbers
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .replace(/^[0-9]+/, '')
     .trim();
 }
 
-// Setup output folders
 if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-
 TAG_COLUMNS.forEach(tag => {
   const folder = path.join(outputDir, tag);
   if (fs.existsSync(folder)) fs.rmSync(folder, { recursive: true });
   fs.mkdirSync(folder, { recursive: true });
 });
 
-const routesRaw = fs.readFileSync(path.join(jsonDir, 'routes.json'));
+const routesRaw = fs.readFileSync(path.join(jsonDir, 'routes.json'), 'utf-8');
 const routesList = JSON.parse(routesRaw);
 const tagCounts = {};
 const tagRoutesMap = {};
 const usedTags = new Set();
 
-//  Process routes making it possible for website to figure out which feature goes where
 routesList.forEach(route => {
   const filePath = path.join(jsonDir, route.file);
   if (!fs.existsSync(filePath)) return;
 
-  const raw = fs.readFileSync(filePath);
-  const data = JSON.parse(raw);
-
+  const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   const safeName = sanitizeComponentName(data.egenskap || 'Unnamed');
   const componentName = `${safeName}Page`;
   const componentFile = `${componentName}.js`;
@@ -59,13 +59,12 @@ routesList.forEach(route => {
     { label: "Beskrivning", value: data.beskrivning }
   ];
 
-  // generates the page contents that later gets pushed to the website content.
-  const content = `
+  const componentContent = `
 import React from 'react';
 export const tags = ${JSON.stringify(data.tags || [])};
 
 export default function ${componentName}() {
-const fields = ${JSON.stringify(fields)}.filter(f => f.value && f.value !== "Inget innehåll" && f.value !== "nan");
+  const fields = ${JSON.stringify(fields)}.filter(f => f.value && f.value !== "Inget innehåll" && f.value !== "nan");
 
   return (
     <div>
@@ -73,26 +72,20 @@ const fields = ${JSON.stringify(fields)}.filter(f => f.value && f.value !== "Ing
       {fields.map((field, i) => (
         <p key={i}><strong>{field.label}:</strong> {field.value}</p>
       ))}
-
-      ${
-        data.reference && data.reference !== "nan"
-          ? `<p><strong>Läs mer här:</strong> <a href="${data.reference}" target="_blank" rel="noopener noreferrer">${data.reference}</a></p>`
-          : ""
-      }
+      ${data.reference && data.reference !== "nan" ? '<p><strong>Läs mer här:</strong> <a href="' + data.reference + '" target="_blank" rel="noopener noreferrer">' + data.reference + '</a></p>' : ''}
     </div>
   );
 }`.trim();
 
-
   (data.tags || []).forEach(tag => {
-    if (!TAG_COLUMNS.includes(tag)) return; //Only process known tags
-
+    if (!TAG_COLUMNS.includes(tag)) return;
     usedTags.add(tag);
+
     const tagFolder = path.join(outputDir, tag);
-    fs.writeFileSync(path.join(tagFolder, componentFile), content, 'utf-8');
+    fs.writeFileSync(path.join(tagFolder, componentFile), componentContent, 'utf-8');
 
     tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-    if (!tagRoutesMap[tag]) tagRoutesMap[tag] = [];
+    tagRoutesMap[tag] = tagRoutesMap[tag] || [];
 
     if (data.egenskap === "Garo" && tag === "Garo") {
       tagRoutesMap[tag].unshift({ ...route, component: componentFile });
@@ -102,17 +95,26 @@ const fields = ${JSON.stringify(fields)}.filter(f => f.value && f.value !== "Ing
   });
 });
 
-// Write Routes.js per tag. for slider to use later
 TAG_COLUMNS.forEach(tag => {
   const routes = tagRoutesMap[tag] || [];
   const content = `const routes = ${JSON.stringify(routes, null, 2)};\n\nexport default routes;`;
   fs.writeFileSync(path.join(outputDir, tag, 'Routes.js'), content, 'utf-8');
 });
 
-// Write tag count summary
 fs.writeFileSync(path.join(outputDir, 'tagCounts.json'), JSON.stringify(tagCounts, null, 2));
 
-// Debug tag coverage
+const brodRaw = fs.readFileSync(brodtextPath, 'utf-8');
+const brodMap = {};
+brodRaw.split(/\r?\n/).forEach(line => {
+  const [key, ...rest] = line.split(':');
+  if (key && rest.length > 0) {
+    brodMap[key.trim()] = rest.join(':').trim();
+  }
+});
+
+const brodJS = 'const BRODTEXT = ' + JSON.stringify(brodMap, null, 2) + ';\n\nexport default BRODTEXT;';
+fs.writeFileSync(brodtextOutput, brodJS, 'utf-8');
+
 console.log("✅ All components and routes generated.");
 console.log("🧩 Tags used in actual data:", Array.from(usedTags));
 const missingTags = TAG_COLUMNS.filter(tag => !usedTags.has(tag));
