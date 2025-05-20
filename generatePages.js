@@ -1,3 +1,7 @@
+// Explination of code
+// Ahmed Hussein 2000-07-30
+//This takes a json package boundle coming from the python script and adds pushes it to the react -application.
+
 const fs = require('fs');
 const path = require('path');
 

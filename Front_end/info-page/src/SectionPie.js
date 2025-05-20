@@ -4,17 +4,35 @@ import { useNavigate } from 'react-router-dom';
 import tagCounts from './generated/tagCounts.json';
 import TAG_COLORS from './tagColors';
 
+// 🟢 Your custom display order
+const DISPLAY_ORDER = [
+  "Garo",
+  "Installation",
+  "Användarvänlighet",
+  "Driftsäkerhet",
+  "Smarta funktioner",
+  "Ekonomi",
+  "Säkerhet"
+];
+
 const SectionPie = () => {
   const [data, setData] = useState([]);
+  const [hovered, setHovered] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const chartData = Object.entries(tagCounts).map(([name, value]) => ({
+    const rawData = Object.entries(tagCounts).map(([name, value]) => ({
       name,
       value,
       color: TAG_COLORS[name] || '#cccccc'
     }));
-    setData(chartData);
+
+    // 🔃 Sort using the DISPLAY_ORDER
+    const orderedData = DISPLAY_ORDER
+      .map(name => rawData.find(entry => entry.name === name))
+      .filter(Boolean); // skip undefined ones
+
+    setData(orderedData);
   }, []);
 
   const handleClick = (entry) => {
@@ -40,9 +58,15 @@ const SectionPie = () => {
             cy="50%"
             outerRadius={300}
             onClick={handleClick}
+            onMouseLeave={() => setHovered(null)}
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.color}
+                opacity={hovered && hovered !== entry.name ? 0.5 : 1}
+                onMouseEnter={() => setHovered(entry.name)}
+              />
             ))}
           </Pie>
           <Tooltip />
@@ -50,11 +74,23 @@ const SectionPie = () => {
       </div>
 
       <div className="legend">
-        {data.map((entry, index) => (
-          <span key={index} style={{ color: entry.color, marginRight: '1rem', fontSize: '2rem' }}>
-            ● {entry.name}
-          </span>
-        ))}
+        {data.map((entry, index) => {
+          const isHovered = hovered === entry.name;
+          const style = {
+            color: isHovered ? '#fff' : entry.color,
+            backgroundColor: isHovered ? entry.color : 'transparent',
+            marginRight: '1rem',
+            padding: '0.3rem 0.8rem',
+            fontSize: '2rem',
+            borderRadius: '8px',
+            transition: 'all 0.3s ease'
+          };
+          return (
+            <span key={index} style={style}>
+              ● {entry.name}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
