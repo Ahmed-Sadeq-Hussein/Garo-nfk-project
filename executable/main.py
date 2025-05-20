@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import List
 
 # === Settings Handling ===
-SETTINGS_PATH = os.path.join("Python", "Resource folder", "settings.txt")
+SETTINGS_PATH = os.path.join("settings.txt")
 
 def get_settings():
     if not os.path.exists(SETTINGS_PATH):
@@ -52,7 +52,8 @@ def ask_for_settings():
     remember_choice = input("Use this path as default in the future? (y/n): ").strip().lower()
     remember = "true" if remember_choice == "y" else "false"
 
-    os.makedirs(os.path.dirname(SETTINGS_PATH), exist_ok=True)
+    if os.path.dirname(SETTINGS_PATH):
+        os.makedirs(os.path.dirname(SETTINGS_PATH), exist_ok=True)
 
     with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
         f.write("# Settings for Excel processing\n")
@@ -139,7 +140,7 @@ def export_features_to_json():
     path, sheet_name = get_settings()
     features = load_features(path, sheet_name)
 
-    EXPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "resource json"))
+    EXPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "resource json"))
     ROUTES_FILE = os.path.join(EXPORT_DIR, "routes.json")
     TAG_COUNTS_FILE = os.path.join(EXPORT_DIR, "tagCounts.json")
 

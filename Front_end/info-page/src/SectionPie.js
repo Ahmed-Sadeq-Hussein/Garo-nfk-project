@@ -57,6 +57,8 @@ const SectionPie = () => {
             cx="50%"
             cy="50%"
             outerRadius={300}
+            startAngle={90}
+            endAngle={-270}  // <- Makes it go clockwise
             onClick={handleClick}
             onMouseLeave={() => setHovered(null)}
           >
