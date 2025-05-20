@@ -14,7 +14,7 @@ const TAG_COLUMNS = [
 
 const isPackaged = process.pkg != null;
 const exeDir = isPackaged ? path.dirname(process.execPath) : __dirname;
-const garoRoot = path.resolve(exeDir, '..');
+const garoRoot = path.resolve(exeDir);
 const jsonDir = path.join(garoRoot, 'resource json');
 const outputDir = path.join(garoRoot, 'Front_end', 'info-page', 'src', 'generated');
 const brodtextPath = path.join(exeDir, 'brödtext.txt');
