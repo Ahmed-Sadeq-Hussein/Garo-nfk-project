@@ -10,6 +10,25 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import List
 
+# === Folder Cleanup at Start ===
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)  # Running from .exe
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Running from .py
+
+GENERATED_DIR = os.path.join(BASE_DIR, 'Front_end', 'info-page', 'src', 'generated')
+RESOURCE_JSON_DIR = os.path.join(BASE_DIR, 'resource json')
+
+def remove_folder(path, name):
+    if os.path.exists(path): 
+        shutil.rmtree(path)
+        print(f"✅ Deleted '{name}' folder.")
+    else:
+        print(f"ℹ️ '{name}' folder does not exist, skipping.")
+
+remove_folder(GENERATED_DIR, 'generated')
+remove_folder(RESOURCE_JSON_DIR, 'resource json')
+
 # === Settings Handling ===
 SETTINGS_PATH = os.path.join("settings.txt")
 
@@ -41,10 +60,10 @@ def get_settings():
 def ask_for_settings():
     root = tk.Tk()
     root.withdraw()
-    file_path = filedialog.askopenfilename(title="Select Excel file", filetypes=[("Excel files", "*.xlsx")])
+    file_path = filedialog.askopenfilename(title="Select Excel file", filetypes=[["Excel files", "*.xlsx"]])
     if not file_path:
         raise Exception("No file selected.")
-    
+
     sheet_name = input("Enter the sheet name (or press Enter if there's only one): ").strip()
     if not sheet_name:
         sheet_name = "Entity"
@@ -126,13 +145,13 @@ def load_features(path: str, sheet_name: str) -> List[Feature]:
     return [read_feature_from_row(row) for _, row in df.iterrows()]
 
 # === JSON Export ===
-# Cleans all items in dict
+
 def clean_dict(d):
     return {
         k: ("Inget innehåll" if isinstance(v, float) and math.isnan(v) else v)
         for k, v in d.items()
     }
-#for export purposes we use this to make it possible to read
+
 def sanitize_filename(name: str) -> str:
     return "".join(c for c in name if c.isalnum() or c in (' ', '_', '-')).strip()
 
@@ -140,7 +159,7 @@ def export_features_to_json():
     path, sheet_name = get_settings()
     features = load_features(path, sheet_name)
 
-    EXPORT_DIR = os.path.abspath(os.path.join("resource json"))
+    EXPORT_DIR = os.path.join(BASE_DIR, "resource json")
     ROUTES_FILE = os.path.join(EXPORT_DIR, "routes.json")
     TAG_COUNTS_FILE = os.path.join(EXPORT_DIR, "tagCounts.json")
 
