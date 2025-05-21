@@ -70,7 +70,7 @@ TAG_COLUMNS = [
     "Säkerhet",
     "Driftsäkerhet",
     "Installation",
-    "användarvänligt",
+    "Användarvänlighet",
     "Smarta funktioner",
     "Ekonomi"
 ]
@@ -89,7 +89,7 @@ class Feature:
     Säkerhet: int
     Driftsäkerhet: int
     Installation: int
-    användarvänligt: int
+    Användarvänlighet: int
     Smartafunktioner: int
     Ekonomi: int
 
@@ -113,7 +113,7 @@ def read_feature_from_row(row) -> Feature:
         Säkerhet=safe_int(row.get('Säkerhet')),
         Driftsäkerhet=safe_int(row.get('Driftsäkerhet')),
         Installation=safe_int(row.get('Installation')),
-        användarvänligt=safe_int(row.get('användarvänligt')),
+        Användarvänlighet=safe_int(row.get('Användarvänlighet')),
         Smartafunktioner=safe_int(row.get('Smarta funktioner')),
         Ekonomi=safe_int(row.get('Ekonomi'))
     )
@@ -126,13 +126,13 @@ def load_features(path: str, sheet_name: str) -> List[Feature]:
     return [read_feature_from_row(row) for _, row in df.iterrows()]
 
 # === JSON Export ===
-
+# Cleans all items in dict
 def clean_dict(d):
     return {
         k: ("Inget innehåll" if isinstance(v, float) and math.isnan(v) else v)
         for k, v in d.items()
     }
-
+#for export purposes we use this to make it possible to read
 def sanitize_filename(name: str) -> str:
     return "".join(c for c in name if c.isalnum() or c in (' ', '_', '-')).strip()
 
@@ -140,7 +140,7 @@ def export_features_to_json():
     path, sheet_name = get_settings()
     features = load_features(path, sheet_name)
 
-    EXPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "resource json"))
+    EXPORT_DIR = os.path.abspath(os.path.join("resource json"))
     ROUTES_FILE = os.path.join(EXPORT_DIR, "routes.json")
     TAG_COUNTS_FILE = os.path.join(EXPORT_DIR, "tagCounts.json")
 
@@ -149,7 +149,7 @@ def export_features_to_json():
         "Säkerhet": "Säkerhet",
         "Driftsäkerhet": "Driftsäkerhet",
         "Installation": "Installation",
-        "användarvänligt": "användarvänligt",
+        "Användarvänlighet": "Användarvänlighet",
         "Smarta funktioner": "Smartafunktioner",
         "Ekonomi": "Ekonomi"
     }
