@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import TAG_COLORS from './tagColors';
+import BRODTEXT from './generated/brodtext'; // 👈 Import here
 
 export default function TagSlider() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function TagSlider() {
   // Apply global body tint
   useEffect(() => {
     const previous = document.body.style.backgroundColor;
-    document.body.style.backgroundColor = `${borderColor}10`; // soft tint
+    document.body.style.backgroundColor = `${borderColor}10`;
     return () => {
       document.body.style.backgroundColor = previous;
     };
@@ -59,6 +60,17 @@ export default function TagSlider() {
         >
           {id}
         </h2>
+
+        {/* ✅ Show brödtext */}
+        <p style={{
+          maxWidth: '800px',
+          margin: '1rem auto',
+          fontSize: '1.3rem',
+          color: '#444',
+          fontStyle: 'italic'
+        }}>
+          {BRODTEXT[id] || 'Ingen brödtext tillgänglig för denna kategori.'}
+        </p>
       </div>
 
       {routes.map((route, index) => {

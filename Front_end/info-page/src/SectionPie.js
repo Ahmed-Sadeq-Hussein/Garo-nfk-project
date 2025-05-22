@@ -1,10 +1,12 @@
+//
+
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import tagCounts from './generated/tagCounts.json';
 import TAG_COLORS from './tagColors';
 
-// 🟢 Your custom display order
+// Your custom display order
 const DISPLAY_ORDER = [
   "Garo",
   "Installation",

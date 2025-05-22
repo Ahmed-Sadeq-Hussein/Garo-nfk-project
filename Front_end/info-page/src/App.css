@@ -48,3 +48,23 @@ body {
 .alt-section:nth-child(odd) {
   background-color: #ffffff;
 }
+.section-container {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2rem;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .legend span {
+    font-size: 1.2rem;
+  }
+}
