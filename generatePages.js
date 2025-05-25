@@ -32,11 +32,16 @@ function sanitizeComponentName(name) {
     .trim();
 }
 
-// Clean/Create output folders
-if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+// === Clean existing 'generated' folder ===
+if (fs.existsSync(outputDir)) {
+  fs.rmSync(outputDir, { recursive: true, force: true });
+  console.log("🗑️ Removed previous 'generated' folder to start fresh.");
+}
+
+// === Create output folders ===
+fs.mkdirSync(outputDir, { recursive: true });
 TAG_COLUMNS.forEach(tag => {
   const folder = path.join(outputDir, tag);
-  if (fs.existsSync(folder)) fs.rmSync(folder, { recursive: true });
   fs.mkdirSync(folder, { recursive: true });
 });
 
@@ -103,14 +108,14 @@ export default function ${componentName}() {
   });
 });
 
-// Generate per-tag Routes.js files
+// === Generate per-tag Routes.js files ===
 TAG_COLUMNS.forEach(tag => {
   const routes = tagRoutesMap[tag] || [];
   const content = `const routes = ${JSON.stringify(routes, null, 2)};\n\nexport default routes;`;
   fs.writeFileSync(path.join(outputDir, tag, 'Routes.js'), content, 'utf-8');
 });
 
-// Save tagCounts for pie chart
+// === Save tagCounts for pie chart ===
 fs.writeFileSync(path.join(outputDir, 'tagCounts.json'), JSON.stringify(tagCounts, null, 2), 'utf-8');
 
 // === Parse and write brödtext.js ===

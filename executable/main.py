@@ -26,7 +26,6 @@ def remove_folder(path, name):
     else:
         print(f"ℹ️ '{name}' folder does not exist, skipping.")
 
-remove_folder(GENERATED_DIR, 'generated')
 remove_folder(RESOURCE_JSON_DIR, 'resource json')
 
 # === Settings Handling ===
@@ -64,9 +63,20 @@ def ask_for_settings():
     if not file_path:
         raise Exception("No file selected.")
 
-    sheet_name = input("Enter the sheet name (or press Enter if there's only one): ").strip()
-    if not sheet_name:
-        sheet_name = "Entity"
+    # Load sheet names and prompt until correct one is chosen
+    import openpyxl
+    wb = openpyxl.load_workbook(file_path, read_only=True)
+    available_sheets = wb.sheetnames
+
+    print(f"\n📄 Available sheets in file:")
+    for i, name in enumerate(available_sheets, start=1):
+        print(f"{i}. {name}")
+
+    sheet_name = ""
+    while sheet_name not in available_sheets:
+        sheet_name = input("Enter the sheet name exactly as above: ").strip()
+        if sheet_name not in available_sheets:
+            print("❌ Invalid sheet name. Try again.\n")
 
     remember_choice = input("Use this path as default in the future? (y/n): ").strip().lower()
     remember = "true" if remember_choice == "y" else "false"
@@ -81,6 +91,7 @@ def ask_for_settings():
         f.write(f"remember={remember}\n")
 
     return file_path, sheet_name
+
 
 # === Feature Data Definition ===
 
