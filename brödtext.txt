@@ -5,3 +5,4 @@ Installation: Handlar om hur enkelt och säkert det är att installera produkten
 Användarvänlighet: Funktioner som förenklar hantering, användning och förståelse för användaren.
 Smarta funktioner: Avancerade eller automatiserade funktioner som höjer upplevelsen eller effektiviteten.
 Ekonomi: Kostnadsbesparingar, värdeökning eller andra ekonomiska fördelar för kunden.
+Namn:Entity

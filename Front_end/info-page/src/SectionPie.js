@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import tagCounts from './generated/tagCounts.json';
 import TAG_COLORS from './tagColors';
+import BRODTEXT from './generated/brodtext';
 
 // Your custom display order
 const DISPLAY_ORDER = [
@@ -46,9 +47,9 @@ const SectionPie = () => {
   return (
     <div className="section-container">
       <img src="/garo-logo-red.png" alt="Garo Logo" className="garo-logo" />
+      <h2 className='title'>Läs mer om {BRODTEXT["Namn"]}</h2> 
 
-      <h2 className="title">Detta är en informations hemsida för er som vill gärna läsa mer om</h2>
-      <h2 className="title">Välj en Sektion</h2>
+      <h2 className="title">Välj sektion som intresserar dig</h2>
 
       <div className="chart-wrapper">
         <PieChart width={600} height={600}>

@@ -119,21 +119,29 @@ TAG_COLUMNS.forEach(tag => {
 fs.writeFileSync(path.join(outputDir, 'tagCounts.json'), JSON.stringify(tagCounts, null, 2), 'utf-8');
 
 // === Parse and write brödtext.js ===
+// === Parse and write brödtext.js and entityName.js ===
 const brodRaw = fs.readFileSync(brodtextPath, 'utf-8').replace(/\r/g, '');
 const brodMap = {};
+let entityName = '';
+
 brodRaw.split('\n').forEach(line => {
   const [key, ...rest] = line.split(':');
   if (key && rest.length > 0) {
-    brodMap[key.trim()] = rest.join(':').trim();
+    const trimmedKey = key.trim();
+    const value = rest.join(':').trim();
+    brodMap[trimmedKey] = value;
+    if (trimmedKey === "Namn") {
+      entityName = value;
+    }
   }
 });
 
+// Write brodtext.js
 const brodJS = `const BRODTEXT = ${JSON.stringify(brodMap, null, 2)};\n\nexport default BRODTEXT;\n`;
 fs.writeFileSync(brodtextOutput, brodJS, 'utf-8');
 
-console.log("✅ All components and routes generated.");
-console.log("🧩 Tags used in actual data:", Array.from(usedTags));
-const missingTags = TAG_COLUMNS.filter(tag => !usedTags.has(tag));
-if (missingTags.length > 0) {
-  console.warn("⚠️ Tags in TAG_COLUMNS but not found in any data:", missingTags);
+// Write entityName.js if "Namn" was found
+if (entityName) {
+  const entityJS = `const ENTITY_NAME = ${JSON.stringify(entityName)};\n\nexport default ENTITY_NAME;\n`;
+  fs.writeFileSync(path.join(outputDir, 'entityName.js'), entityJS, 'utf-8');
 }
