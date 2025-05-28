@@ -1,13 +1,11 @@
-//
-
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import tagCounts from './generated/tagCounts.json';
 import TAG_COLORS from './tagColors';
 import BRODTEXT from './generated/brodtext';
+import QRCodeComponent from './generated/qrCode';
 
-// Your custom display order
 const DISPLAY_ORDER = [
   "Garo",
   "Installation",
@@ -30,10 +28,9 @@ const SectionPie = () => {
       color: TAG_COLORS[name] || '#cccccc'
     }));
 
-    // 🔃 Sort using the DISPLAY_ORDER
     const orderedData = DISPLAY_ORDER
       .map(name => rawData.find(entry => entry.name === name))
-      .filter(Boolean); // skip undefined ones
+      .filter(Boolean);
 
     setData(orderedData);
   }, []);
@@ -48,7 +45,6 @@ const SectionPie = () => {
     <div className="section-container">
       <img src="/garo-logo-red.png" alt="Garo Logo" className="garo-logo" />
       <h2 className='title'>Läs mer om {BRODTEXT["Namn"]}</h2> 
-
       <h2 className="title">Välj sektion som intresserar dig</h2>
 
       <div className="chart-wrapper">
@@ -61,7 +57,7 @@ const SectionPie = () => {
             cy="50%"
             outerRadius={300}
             startAngle={90}
-            endAngle={-270}  // <- Makes it go clockwise
+            endAngle={-270}
             onClick={handleClick}
             onMouseLeave={() => setHovered(null)}
           >
@@ -97,6 +93,8 @@ const SectionPie = () => {
           );
         })}
       </div>
+
+      <QRCodeComponent />
     </div>
   );
 };

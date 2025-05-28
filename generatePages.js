@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 // === Config ===
 const TAG_COLUMNS = [
@@ -32,17 +33,43 @@ function sanitizeComponentName(name) {
     .trim();
 }
 
-// === Clean existing 'generated' folder ===
+function getLocalIPv4() {
+  const networkInterfaces = os.networkInterfaces();
+  const preferredPrefixes = ['192.', '10.'];
+
+  for (const iface of Object.values(networkInterfaces)) {
+    for (const net of iface) {
+      if (
+        net.family === 'IPv4' &&
+        !net.internal &&
+        preferredPrefixes.some(prefix => net.address.startsWith(prefix))
+      ) {
+        return net.address;
+      }
+    }
+  }
+
+  for (const iface of Object.values(networkInterfaces)) {
+    for (const net of iface) {
+      if (net.family === 'IPv4' && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+
+  return 'localhost';
+}
+
+const localIP = getLocalIPv4();
+
+// === Clean and recreate 'generated' folder ===
 if (fs.existsSync(outputDir)) {
   fs.rmSync(outputDir, { recursive: true, force: true });
   console.log("🗑️ Removed previous 'generated' folder to start fresh.");
 }
-
-// === Create output folders ===
 fs.mkdirSync(outputDir, { recursive: true });
 TAG_COLUMNS.forEach(tag => {
-  const folder = path.join(outputDir, tag);
-  fs.mkdirSync(folder, { recursive: true });
+  fs.mkdirSync(path.join(outputDir, tag), { recursive: true });
 });
 
 const routesList = JSON.parse(fs.readFileSync(path.join(jsonDir, 'routes.json'), 'utf-8'));
@@ -81,11 +108,7 @@ export default function ${componentName}() {
       {fields.map((field, i) => (
         <p key={i}><strong>{field.label}:</strong> {field.value}</p>
       ))}
-      ${
-        data.reference && data.reference !== "nan"
-          ? `<p><strong>Läs mer här:</strong> <a href="${data.reference}" target="_blank" rel="noopener noreferrer">${data.reference}</a></p>`
-          : ''
-      }
+      ${data.reference && data.reference !== "nan" ? `<p><strong>Läs mer här:</strong> <a href="${data.reference}" target="_blank" rel="noopener noreferrer">${data.reference}</a></p>` : ''}
     </div>
   );
 }`.trim();
@@ -108,18 +131,16 @@ export default function ${componentName}() {
   });
 });
 
-// === Generate per-tag Routes.js files ===
 TAG_COLUMNS.forEach(tag => {
   const routes = tagRoutesMap[tag] || [];
-  const content = `const routes = ${JSON.stringify(routes, null, 2)};\n\nexport default routes;`;
+  const content = `const routes = ${JSON.stringify(routes, null, 2)};
+
+export default routes;`;
   fs.writeFileSync(path.join(outputDir, tag, 'Routes.js'), content, 'utf-8');
 });
 
-// === Save tagCounts for pie chart ===
 fs.writeFileSync(path.join(outputDir, 'tagCounts.json'), JSON.stringify(tagCounts, null, 2), 'utf-8');
 
-// === Parse and write brödtext.js ===
-// === Parse and write brödtext.js and entityName.js ===
 const brodRaw = fs.readFileSync(brodtextPath, 'utf-8').replace(/\r/g, '');
 const brodMap = {};
 let entityName = '';
@@ -136,12 +157,26 @@ brodRaw.split('\n').forEach(line => {
   }
 });
 
-// Write brodtext.js
-const brodJS = `const BRODTEXT = ${JSON.stringify(brodMap, null, 2)};\n\nexport default BRODTEXT;\n`;
-fs.writeFileSync(brodtextOutput, brodJS, 'utf-8');
+fs.writeFileSync(brodtextOutput, `const BRODTEXT = ${JSON.stringify(brodMap, null, 2)};\n\nexport default BRODTEXT;\n`, 'utf-8');
 
-// Write entityName.js if "Namn" was found
 if (entityName) {
   const entityJS = `const ENTITY_NAME = ${JSON.stringify(entityName)};\n\nexport default ENTITY_NAME;\n`;
   fs.writeFileSync(path.join(outputDir, 'entityName.js'), entityJS, 'utf-8');
 }
+
+const qrComponent = `
+import React from 'react';
+import { QRCodeSVG } from 'qrcode.react';
+
+export default function QRCodeComponent() {
+  return (
+    <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+      <p style={{ fontSize: '1.5rem' }}>Skanna QR-koden för att öppna sidan på mobilen:</p>
+      <QRCodeSVG value="http://${localIP}:3000" size={180} />
+    </div>
+  );
+}`.trim();
+
+fs.writeFileSync(path.join(outputDir, 'qrCode.js'), qrComponent, 'utf-8');
+console.log("✅ All components and files generated successfully.");
+console.log("🌐 QR Code points to: http://" + localIP + ":3000");
